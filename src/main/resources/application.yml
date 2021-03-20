@@ -33,7 +33,7 @@ server:
 logging:
   level:
     com.ruoyi: debug
-    org.springframework: debug
+    org.springframework: info
 
 # Spring配置
 spring:

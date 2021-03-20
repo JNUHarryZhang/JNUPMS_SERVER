@@ -2,6 +2,7 @@ package com.ruoyi.project.system.service.impl;
 
 import com.ruoyi.common.enums.TitleSource;
 import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
 import com.ruoyi.project.system.domain.Tech;
 import com.ruoyi.project.system.domain.vo.TechTotal;
 import com.ruoyi.project.system.mapper.SysChartMapper;
@@ -9,6 +10,8 @@ import com.ruoyi.project.system.mapper.SysPaperInfoMapper;
 import com.ruoyi.project.system.mapper.SysSkillTypeMapper;
 import com.ruoyi.project.system.mapper.SysVocaMapper;
 import com.sun.javafx.collections.MappingChange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,8 @@ public class SysChartServiceImpl {
 
     @Resource
     private SysVocaMapper vocaMapper;
+
+    public static final Logger log = LoggerFactory.getLogger(SysChartServiceImpl.class);
 
     public List<Map<String, Object>> getTitleSource() {
         List<Map<String, Object>> titleSource = chartMapper.getTitleSource();
@@ -108,7 +113,7 @@ public class SysChartServiceImpl {
 
     private void getWorldCloud() {
 
-        String url = "C:/Users/Xinke/Downloads/wordCloud/wordCloud";
+        String url = "C:/Users/10733/Desktop/lunwen/WordCloud_0320/wordCloud";
 
         List<String> titles = paperInfoMapper.selectAllTitle();
         String lunwen = url + "/doc/lunwen.txt";
@@ -136,9 +141,11 @@ public class SysChartServiceImpl {
         }
     }
 
-//    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     private void cronTask() {
+        log.info("开始生成词云图");
         getWorldCloud();
+        log.info("词云图生成完毕");
     }
 
 
