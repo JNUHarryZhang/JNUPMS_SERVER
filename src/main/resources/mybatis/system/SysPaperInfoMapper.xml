@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.SysPaperInfoMapper">
+
+    <insert id="addPaperInfo" parameterType="map">
+        insert into paper_info
+        (
+            <if test="stuId != null">stu_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="teacher != null and teacher != ''">teacher,</if>
+            <if test="titleSource != null and titleSource != ''">title_source,</if>
+            <if test="techId != null">tech_id,</if>
+            <if test="keyWord != null and keyWord != ''">key_word</if>,
+            paper_year
+        )
+        values
+        (
+            <if test="stuId != null">#{stuId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="teacher != null and teacher != ''">#{teacher},</if>
+            <if test="titleSource != null and titleSource != ''">#{titleSource},</if>
+            <if test="techId != null">#{techId},</if>
+            <if test="keyWord != null and keyWord != ''">#{keyWord}</if>
+            #{paperYear}
+        )
+    </insert>
+
+    <update id="editPaperInfo" parameterType="map">
+        update paper_info
+        <set>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="teacher != null and teacher != ''">teacher = #{teacher},</if>
+            <if test="titleSource != null and titleSource != ''">title_source = #{titleSource},</if>
+            <if test="techId != null">tech_id = #{techId},</if>
+            <if test="keyWord != null and keyWord != ''">key_word = #{keyWord}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delPaperInfo" parameterType="long">
+        delete from paper_info where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryPaperList" resultType="map" parameterType="map">
+        select a.id, a.title, a.teacher,
+        a.title_source as titleSource, a.tech_id as techId,
+        a.key_word as keyWord,
+        b.user_name as userName, b.nick_name as nickName,
+        b.graduate_time as graduateTime, c.tech_type as techType
+        from paper_info a
+        left join sys_user b on a.stu_id = b.user_id
+        left join skill_type c on a.tech_id = c.id
+        <where>
+            <if test="nickName != null and nickName != ''">
+                and b.nick_name like concat('%', #{nickName}, '%')
+            </if>
+            <if test="userName != null and userName != ''">
+                and b.user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="graduateTime != null and graduateTime != ''">
+                and b.graduate_time like concat('%', #{graduateTime}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                and a.title like concat('%', #{title}, '%')
+            </if>
+            <if test="techType != null and techType != ''">
+                and c.tech_type like concat ('%', #{techType}, '%')
+            </if>
+            <if test="teacher != null and teacher != ''">
+                and a.teacher like concat('%', #{teacher}, '%')
+            </if>
+            <if test="titleSource != null and titleSource != ''">
+                and a.title_source like concat('%', #{titleSource} ,'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getInfo" parameterType="long" resultType="map">
+        select a.id, a.title, a.teacher,
+        a.title_source as titleSource, a.tech_id as techId,
+        a.key_word as keyWord,
+        b.user_name as userName, b.nick_name as nickName,
+        b.graduate_time as graduateTime,
+        c.tech_type as techType
+        from paper_info a
+        left join sys_user b on a.stu_id = b.user_id
+        left join skill_type c on a.tech_id = c.id
+        where a.id = #{id}
+    </select>
+
+    <select id="selectAllTitle" resultType="string">
+        select title from paper_info
+    </select>
+</mapper>

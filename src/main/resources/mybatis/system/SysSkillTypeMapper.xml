@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.SysSkillTypeMapper">
+
+    <insert id="addSkill" parameterType="string">
+        insert into skill_type (tech_type)
+        values
+        (
+            #{techType}
+        )
+    </insert>
+
+    <update id="editSkill" parameterType="map">
+        update skill_type
+        set tech_type = #{techType}
+        where id = #{id}
+    </update>
+
+    <delete id="delSkill" parameterType="long">
+        delete from skill_type where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <select id="querySkillList" resultType="map" parameterType="string">
+        select id, tech_type as techType from skill_type
+        <if test="techType != null and techType != ''">
+            where tech_type like concat('%', #{techType}, '%')
+        </if>
+    </select>
+
+    <select id="queryInfoById" resultType="map" parameterType="long">
+        select id, tech_type as techType from skill_type where id = #{id}
+    </select>
+</mapper>

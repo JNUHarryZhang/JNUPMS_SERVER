@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.SysVocaMapper">
+
+    <insert id="addVoca" parameterType="map">
+        insert into vocabulary (voca_name)
+        values
+        (
+            #{vocaName}
+        )
+    </insert>
+
+    <update id="editVoca" parameterType="map">
+        update vocabulary
+        set voca_name = #{vocaName}
+        where id = #{id}
+    </update>
+
+    <delete id="delVoca" parameterType="long">
+        delete from vocabulary where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <select id="queryVocaList" resultType="map" parameterType="string">
+        select id, voca_name as vocaName from vocabulary
+        <if test="vocaName != null and vocaName != ''">
+            where voca_name like concat('%', #{vocaName}, '%')
+        </if>
+    </select>
+
+    <select id="queryVocaInfo" resultType="map" parameterType="long">
+        select id, voca_name as vocaName from vocabulary where id = #{id}
+    </select>
+    
+    <select id="selectAllName" resultType="string">
+        select voca_name from vocabulary
+    </select>
+</mapper>

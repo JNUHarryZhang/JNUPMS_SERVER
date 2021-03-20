@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.SysChartMapper">
+    
+    <resultMap id="result" type="com.ruoyi.project.system.domain.Tech">
+        <result column="paper_year" property="paperYear" />
+        <collection property="techTotals" ofType="com.ruoyi.project.system.domain.vo.TechTotal">
+            <result column="tech_id" property="id" />
+            <result column="total" property="total" />
+        </collection>
+    </resultMap>
+
+    <select id="getTitleSource" resultType="map">
+        SELECT title_source as name, count(title_source) as value FROM paper_info group by title_source
+    </select>
+
+    <select id="getTeacher" resultType="map">
+        SELECT teacher as name, count(teacher) as value FROM paper_info group by teacher
+    </select>
+
+    <select id="getSkillTypeInfo" resultType="map">
+        select id, tech_type as name from skill_type
+    </select>
+
+    <select id="getTechByYear" resultMap="result">
+        select paper_year, tech_id, count(tech_id) as total
+        from paper_info
+        group by paper_year, tech_id
+    </select>
+
+    <select id="selectTopTen" resultType="map">
+        select b.tech_type as techType, count(a.tech_id) as techNum from paper_info a
+        inner join skill_type b on a.tech_id = b.id
+        group by a.tech_id
+        order by techNum desc
+        limit 10
+    </select>
+
+    <select id="selectTypes" resultType="map">
+        select id, tech_type as techType from skill_type
+    </select>
+    
+    <select id="selectPaperIdTitle" resultType="map">
+        select id, title, tech_id as techId
+        from paper_info
+    </select>
+</mapper>
