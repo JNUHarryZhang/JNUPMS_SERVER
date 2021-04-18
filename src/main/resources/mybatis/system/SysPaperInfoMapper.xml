@@ -12,7 +12,7 @@
             <if test="teacher != null and teacher != ''">teacher,</if>
             <if test="titleSource != null and titleSource != ''">title_source,</if>
             <if test="techId != null">tech_id,</if>
-            <if test="keyWord != null and keyWord != ''">key_word</if>,
+            <if test="keyWord != null and keyWord != ''">key_word,</if>
             paper_year
         )
         values
@@ -78,6 +78,7 @@
                 and a.title_source like concat('%', #{titleSource} ,'%')
             </if>
         </where>
+        order by a.create_time desc
     </select>
 
     <select id="getInfo" parameterType="long" resultType="map">

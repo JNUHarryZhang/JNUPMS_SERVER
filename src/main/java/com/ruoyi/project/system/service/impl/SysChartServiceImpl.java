@@ -2,14 +2,13 @@ package com.ruoyi.project.system.service.impl;
 
 import com.ruoyi.common.enums.TitleSource;
 import com.ruoyi.common.utils.file.FileUtils;
-import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
 import com.ruoyi.project.system.domain.Tech;
 import com.ruoyi.project.system.domain.vo.TechTotal;
 import com.ruoyi.project.system.mapper.SysChartMapper;
 import com.ruoyi.project.system.mapper.SysPaperInfoMapper;
 import com.ruoyi.project.system.mapper.SysSkillTypeMapper;
 import com.ruoyi.project.system.mapper.SysVocaMapper;
-import com.sun.javafx.collections.MappingChange;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,8 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
+
 
 @Service
 public class SysChartServiceImpl {
@@ -111,14 +109,21 @@ public class SysChartServiceImpl {
         return result;
     }
 
+    // 每隔20秒生成一张最新的词云图
+    @Scheduled(cron = "0/20 * * * * ?")
+    private void cronTask() {
+        log.info("开始生成词云图");
+        // 生成词云图函数
+        getWorldCloud();
+        log.info("词云图生成完毕");
+    }
+
+    // 生成词云图
     private void getWorldCloud() {
-
         String url = "C:/Users/10733/Desktop/lunwen/WordCloud_0320/wordCloud";
-
         List<String> titles = paperInfoMapper.selectAllTitle();
         String lunwen = url + "/doc/lunwen.txt";
         FileUtils.writeLists(lunwen, titles);
-
         String dict = url + "/userdict/userdict.txt";
         List<String> nameList = vocaMapper.selectAllName();
         FileUtils.writeLists(dict, nameList);
@@ -140,14 +145,6 @@ public class SysChartServiceImpl {
             e.printStackTrace();
         }
     }
-
-    @Scheduled(cron = "0 0/1 * * * ?")
-    private void cronTask() {
-        log.info("开始生成词云图");
-        getWorldCloud();
-        log.info("词云图生成完毕");
-    }
-
 
     public Map<String, Object> getTopTen() {
 
