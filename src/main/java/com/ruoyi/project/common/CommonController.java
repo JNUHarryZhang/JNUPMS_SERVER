@@ -2,6 +2,8 @@ package com.ruoyi.project.common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.project.system.mapper.SysPaperInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,41 @@ public class CommonController
 
     @Autowired
     private ServerConfig serverConfig;
+
+    @Autowired
+    private SysPaperInfoMapper sysPaperInfoMapper;
+
+    /**
+     * 论文下载请求
+     *
+     * @param fileId 文件名称
+     */
+    @GetMapping("common/downloadPaper")
+    public void paperDownloadPaper(Long fileId, HttpServletResponse response, HttpServletRequest request)
+    {
+        String fileName = sysPaperInfoMapper.getPaperAddressById(fileId);
+        try
+        {
+            if (!FileUtils.isValidFilename(fileName))
+            {
+                throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
+            }
+            String realFileName = fileName;
+//            String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
+            String filePath = RuoYiConfig.getDownloadPath() + fileName;
+
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition",
+                    "attachment;fileName=" + FileUtils.setFileDownloadHeader(request, realFileName));
+            FileUtils.writeBytes(filePath, response.getOutputStream());
+        }
+        catch (Exception e)
+        {
+            log.error("下载文件失败", e);
+        }
+    }
+
 
     /**
      * 通用下载请求

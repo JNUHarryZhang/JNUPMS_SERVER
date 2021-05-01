@@ -109,8 +109,8 @@ public class SysChartServiceImpl {
         return result;
     }
 
-    // 每隔20秒生成一张最新的词云图
-    @Scheduled(cron = "0/20 * * * * ?")
+    // 每隔30分钟生成一张最新的词云图
+    @Scheduled(cron = "0 0/30 * * * ?")
     private void cronTask() {
         log.info("开始生成词云图");
         // 生成词云图函数

@@ -1,9 +1,12 @@
 package com.ruoyi.project.system.mapper;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
 public interface SysPaperInfoMapper {
+    String getPaperAddressById(@Param("id") Long id);
 
     int addPaperInfo(Map<String, Object> map);
 

@@ -4,6 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.system.mapper.SysPaperInfoMapper">
 
+    <select id="getPaperAddressById" resultType="String">
+        select a.address
+        from paper_address a
+        where a.id = #{id}
+    </select>
+
     <insert id="addPaperInfo" parameterType="map">
         insert into paper_info
         (
